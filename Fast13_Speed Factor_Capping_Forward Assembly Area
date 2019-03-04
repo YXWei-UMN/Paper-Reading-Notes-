@@ -1,0 +1,16 @@
+Paper：Improving Restore Speed for Backup Systems that Use Inline Chunk-Based Deduplication, FAST‘13。
+
+2013年的FAST会议开完了，HP实验室的研究员发表了一篇关于数据去重系统读性能的论文，与sparse index是同一作者。这篇文章主要有三个贡献，如下：
+
+一、
+提出衡量碎片程度和读性能的量化指标，mean containers read per MB and speed factor。Nam等人曾提出CFL来衡量碎片程度，但是CFL忽略了数据集内部引用情况。mean containers read MB的意思是，每读取1MB的数据，平均需要读多少个container。显然，这个值越高代表碎片越严重。speed factor等于1/mean containers read per MB，碎片越严重，读性能当然越差。论文实验部分都是用speed factor去衡量读性能的。但是，论文并没有用实验去验证该指标与性能的关系，由于缓存（系统缓存）会影响读性能（特别是在内部引用特别多的情况下），该指标可能会和实际性能产生出入。不过其优点是可以避开系统差异、代码优化等等干扰。
+
+二、
+capping算法。这个算法通过重写部分重复数据块换取读性能，其思想和CBR（传送门）很相近，只不过后者倾向于控制rewrite的比例，而前者倾向于维持读性能。capping使用一段定长的缓冲区segment(比如20MB)，接受数据流时，用数据块充满segment，然后依次查询指纹索引，统计每个重复数据块所在的container。计算每个container包括了多少数据，根据数据量进行排序，然后选择数据量最大的前T个container，segment中属于这些container的块将被去重，剩余的块会被重写到新容器中。capping很好地维持了与segment相关容器的数量，和speed factor很配。
+
+三、
+forward assembly area。capping解决的是如何写的问题，assembly解决的是如何读的问题。传统去重系统使用LRU container cache，但是恢复时我们其实知道数据读取的顺序，因此可以开发更高级的缓存（这和我之前的观察是一样的道理，传送门）。assembly首先申请一段缓存大小的连续内存区域，称为assembly area，每次预读一段与assembly area大小相适应的指纹序列到内存，读取第一个指纹所属container，根据指纹序列将此container中的数据填到assembly area相应的位置。然后将assembly area头部连续的已填满的数据写入文件，继续读取下一个容器，反复操作。
+
+
+
+capping算法没有什么新意，本质上与CBR是类似的；assembly的一个优点是不存在内存碎片，但是我的实验发现，其性能未必比LRU好，尤其是在数据集有很多内部引用的情况；提出的speed factor这个量化指标还是很有意义的，其它研究者可以用这个指标进行仿真；文章的实验做得很充分。

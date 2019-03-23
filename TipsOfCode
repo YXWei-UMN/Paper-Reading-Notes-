@@ -1,0 +1,5 @@
+1."a" is a pointer which indicates the address of this string. 
+  'a' will be regarded as a integer to cal
+  so 		if (str[1]=='a') is right 
+  while 	if (str[1]=="a") is wrong
+  ps: if(str=="asd") is right, because of class string's overloaded operator ==.

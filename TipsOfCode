@@ -3,3 +3,19 @@
   so 		if (str[1]=='a') is right 
   while 	if (str[1]=="a") is wrong
   ps: if(str=="asd") is right, because of class string's overloaded operator ==.
+
+2.char a1[] != char* a2 (a1 is a const ptr while a2 is variable. a1 indicates changeable string while a2 indicates constant string)
+
+//main.cpp
+int a=0;    //global initialized area
+char *p1;   //global non-initialized area
+main()
+{
+   int b;//stack
+   char s[10]="abc";   //stack,both s and the area "abc" contained. s indicate that area. Cause it is in stack, s[i] can be modified (i.e. s[1]='x'). But s is not a variable or it can be treated as a const ptr(array ptr), and can only be initialized once (i.e. cannot s="fgh"/s[10]="fgh").
+   char *p2;         //stack
+   char *p3="123456";   //p3 is in stack, indicating a sequence of char stored in const string area. So p3 is a variable and can indicate other string(i.e. p3=s) But cannot modify *p3(i.e. *(p3+1)='i' / p3[1]='i').
+//actually, when you define char* a="123", compiler will warn "deprecated conversion from string constant to char*", in which char* may change constant string.  
+   strcpy(p1,"123456");   //123456\0 is in const string area, may be the same address of which p3 indicates.
+}
+

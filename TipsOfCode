@@ -19,3 +19,24 @@ main()
    strcpy(p1,"123456");   //123456\0 is in const string area, may be the same address of which p3 indicates.
 }
 
+3.Iterator seems to be a pointer(actually it is a object, with overload function like '++'.So it can be treated as a pointer).
+//main.cpp
+vector.push_back(obj_1);
+iterator=vector.begin();
+iterator->value=new_value;
+cout<<obj_1.value<<endl; //print old_value
+cout<<list[0].value<<endl;  // print new_value
+
+It seems that, STL container have another separate ram space and independent with the original obj, so when modify the value which pointed by iterator, the value of original obj is not changed.
+
+
+
+
+
+
+
+
+
+
+
+

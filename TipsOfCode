@@ -30,7 +30,13 @@ cout<<list[0].value<<endl;  // print new_value
 It seems that, STL container have another separate ram space and independent with the original obj, so when modify the value which pointed by iterator, the value of original obj is not changed.
 
 
-
+4.Vector also needs to allocate memory
+//code 1
+vector<int> s;
+s[1]=1;//wrong, s[1] is an invalid space
+//code 2
+vector<int> s(10,0);
+s[9]=1;//right, it allocates 10*sizeof(int) for s, and set initial value = 0;
 
 
 

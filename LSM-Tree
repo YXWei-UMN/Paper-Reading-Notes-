@@ -1,0 +1,12 @@
+LSM-Tree(Log-Structured-Merge-Tree)
+
+From the perspective of name, user may misunderstand it as a specific data structure, a tree. But it is not.
+It is only a concept, a structure design philosophy. To understand it, user may need to learn from 3 aspect.
+Log-Structured | Merge | Tree.
+
+(1)LogStructured: Using WAL(write ahead log) technique to trust volatile in-memory data.
+Thus converting the overall storage structure into in-memory storage structure.
+
+(2)Tree: To avoid costly random Write in disk, LSM-Tree organizes data as ordered files set rather than index structure(i.e. B-tree). Everytime, LSM-Tree sequentially write to immutable files to convert random random write into sequentially write. According to its writing timeline, those files will be logically divided as different levels just like a tree and its nodes. That is why LSM-Tree is a "tree".
+
+(3)Merge: As mentioned in (2), LSM-Tree need an ordered files set(both intra and inter file) to effectively read, write and space usage (unorder data may cause redundance and unfriendly to read). Therefore, LSM-Tree requires effective and periodic merge operations to maintain an ordered structure at anywhere in most time. 

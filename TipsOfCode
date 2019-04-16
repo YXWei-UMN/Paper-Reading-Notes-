@@ -38,8 +38,8 @@ s[1]=1;//wrong, s[1] is an invalid space
 vector<int> s(10,0);
 s[9]=1;//right, it allocates 10*sizeof(int) for s, and set initial value = 0;
 
-
-
+5.ifstream conflicts with ofstream
+According to experiments, when you need to both write and read from one file, ofstream and ifstream will confilct with each other causing unknown problem. Using fstream with (ios::in | ios::out) flag can solve this. 
 
 
 
